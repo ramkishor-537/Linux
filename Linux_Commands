@@ -1,0 +1,266 @@
+I'm sharing my understanding about BASIC LINUX COMMANDS and why i'm using it?
+
+Absolute path : 
+Where ever you are in Linux any path, we can refer the destination path directly.
+We have to give whole path in your present working directory.
+Example:
+	/c/devops/aws-88/aws-88 -> absolute path
+
+my present working directory is /c/users/siva
+my private key was existed in this path /c/devops/aws-88/aws-88
+i want to connect to ec2 instance from client
+Command: ssh -i /c/devops/aws-88/aws-88 username@IPADDRESS
+
+Relative path : 
+  We already into this same location /c/devops/ where private key exists.
+  we have to mention the remaining path where our private key exists.
+  Example:
+  	aws-88/aws-88 -> relative path
+
+my present working directory is /c/devops
+my private key was existed in this path /c/devops/aws-88/aws-88
+i want to connect to ec2 instance from client
+Command: ssh -i /aws-88/aws-88 username@IPADDRESS
+
+
+Basic Linux commands:
+  1. cd -> change directory
+
+  2. clear -> clear the screen
+
+  3. $ -> normal user
+
+  4. normal user will land into home directory : /home/ec2-user -> /home/<user-name>
+     a normal user cannot install software's in Linux system
+
+  5. pwd -> /home/ec2-user 
+
+  6. sudo su -> su means super user
+     if you want root access or administrator access
+
+  7. # -> super user
+
+  8. sudo su -
+     you will land into root user home directory
+     /root -> root user home directory
+  
+  Everything is command and text in Linux, 
+  Everything you can get it through commands
+  Command syntax: <inputs> <options>
+  <inputs> <options> -> optional or mandatory based on the command
+  
+  9. 
+   a. uname -> print os/kernel information
+      output: Linux
+
+   b. uname --help -> print system information
+
+   c. uname -i -> print hardware platform
+      output: x86_64
+
+   d. uname -a -> print all information
+
+   e. uname -o -> print the information
+
+  10. man uname -> print manual information of uname command and its arguments
+  
+  Anything is related to CRUD operations in any field
+  CRUD -> create, read, update, delete
+  
+  11. ls -> list subdirectories, files
+
+  12. ls -l -> long format alphabetical order.. file/folder who owns it, size, timestamp and list detailed information
+
+  13. ls -lr -> reverse alphabetical order
+
+  14. ls -lt -> latest files on top or timestamp wise need alphabetical order
+
+  15. ls -ltr -> latest files at bottom of timestamp wise in alphabetical order
+
+  16. cd -> to home directory from wherever you are
+
+  17. ls -ltrrhac -> h means human readable format
+      a means hidden files/folders start with .
+      c means sort first based on time
+      r means display the sorted files based on time in last
+
+  18. ls -a -> hidden files/folders
+
+  19. ls -la -> long listing format to see hidden files
+
+  20. ls -lart -> list hidden files/folders in reverse order based on timestamp first
+  
+  21. create file : touch devops.txt
+
+  22. create folder : mkdir devops
+
+  23. ls -la
+      output: 
+        d rwx------ : starting d means directory
+        - rw-r--r-- : starting - means file
+
+  24. enter text into file : cat > devops.txt
+      Hi, I am learning devops
+      press enter and ctrl+d
+
+  25. cat devops.txt : read the content in the file
+
+  26. change text in file : cat > devops.txt
+  Hi, I am learning Linux
+  
+  > : redirection, usually overrides the previous text
+  >> : appends new text to the end of existing text in the file
+  
+  27. cat >> devops.txt
+      Hi, I am learning devsecops
+
+  28. cat devops.txt
+      Hi, I am learning Linux
+      Hi, I am learning devsecops
+
+  29. remove a file : rm devops.txt
+
+  30. move one step back : cd ..
+
+  31. remove directory : rm devops
+  
+  source -> which file to copy
+  destination -> destination
+  32. cp <source> <destination>
+      Command: cp aws.txt devops
+
+  33. mv aws.txt devops 
+  cut file from source location and past or move the file in destination location
+
+  34. mv aws.txt devops-with-aws.txt
+  rename the existing file
+
+  35. mv aws.txt devops/linux-redhat.txt
+      folder/new_file_name
+      mv -> rename or move the file
+  
+  curl or wget commands are used to downloading files or software's or packages
+  36. wget urlname
+  it is used download the packages
+  web get means command: wget
+  
+  how to browse or read the text in Linux?
+  curl : shows the output on the screen will not download by default
+  it is used to hit the api url's
+  curl is more powerful
+  curl is used to perform CRUD operations on API urls
+  37. curl urlname
+  
+  grep: command to search a word inside the file
+    grep word_to_search filename
+  38. grep user session02.txt
+      It shows matching lines where user exists in the file
+      user is a word
+      session02.txt filename
+
+  39. grep -n user session02.txt
+      -n displays the line number where the user word exists
+      word will display with line numbers
+      output: 101: which part user
+  
+  40. By default Linux is case sensitive
+      if you want case insensitive then use -i
+      cmd: grep -n -i user session02.txt
+      Output: 
+        101: which part user
+        104: which another User
+  
+  41. grep -c user session02.txt
+      -c how many occurrences of user word there in file
+
+  42. grep -v user session02.txt 
+      -v means verbose or shows non matching lines
+
+  43. grep -c user session02.txt
+      shows matching line numbers count
+  
+  display line number ending with the word architecture
+  $ -> ending word
+  ^ -> starting word
+  44. 
+    a. grep 'architecture$' session02.txt
+       display the line the word ending with $
+    b. grep '^ssh' session02.txt
+      display the line the word starting with ^
+
+  45. history : whatever we ran the commands previously that shows it
+
+  46. ctrl+r : start typing you can see the commands you used
+      whatever commands given previously it will display all when we type related word
+      Example: type the word and it will display accordingly
+      'wg': wget url
+  
+  head and tail
+  47. head session02.txt
+      displays top 10 lines by default
+
+  48. tail session02.txt
+      displays bottom 10 lines by default
+
+  49. head -n 3 session02.txt
+      -n : specific number of lines
+      display the top 3 lines
+
+  50. tail -n 3 session02.txt
+      display bottom 3 lines
+  
+  pipe: |
+  51. I want 5 to 15 lines in a file what is the command?
+      Command: head -n 15 filename | tail -n 10 filename
+      first cmd output will be input to second command
+  
+  52. cat session02.txt | grep user
+      search user word in session02.txt file
+
+  53. how do you check running log?
+      tail -f filename 
+      -f means follow the running log
+      come out : ctrl+c
+  
+  IMPORTANT COMMANDS and ADVANCED COMMANDS:
+  cut and awk:
+    these two commands are used for text processing
+  54. print the word
+      command: echo world
+
+  55. cut command can be used for basic usage
+      a. command: echo url | cut -d "/" -f1
+         -d is delimiter
+         -f1 means first fragment 1
+      b. command: echo url | cut -d "/" -f2
+         -d is delimiter
+         -f2 means first fragment 2
+      c. command: echo url | cut -d "/" -f3
+         -d is delimiter
+         -f3 means first fragment 3
+  
+  56. cut -d "/" -f1 <file-name>
+      Example:
+        echo https://www.google.com | cut -d "/" -f3
+        output: www.google.com
+  
+  57. how do you display all users or username in Linux?
+      command: cut -d ":" -f1 /etc/passwd
+      -d mean delimiter
+      -f means fragment or which part
+  
+  58. display all username and userid
+      cat /etc/passwd/
+      cut -d ":" f1,3 /etc/passwd/
+  
+  59. awk command can be used for advance purpose
+      we can use if conditions etc
+      echo urlname | awk -F "/" '{print $NF}'
+      -F is fragment in awk cmd
+      $NF means Nth fragment or last fragment
+  
+  60. awk -F ":" '{print $1F,$3F}' /etc/passwd
+      prints username and id
+      Example:
+        echo https://www.google.com | awk -F "/" '{print $NF}'
+        output: www.google.com
