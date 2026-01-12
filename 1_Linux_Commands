@@ -60,7 +60,7 @@ Basic Linux commands:
 
    d. uname -a -> print all information
 
-   e. uname -o -> print the information
+   e. uname -o -> print the OS information
 
   10. man uname -> print manual information of uname command and its arguments
   
