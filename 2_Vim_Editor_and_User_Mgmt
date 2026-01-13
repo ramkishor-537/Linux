@@ -1,0 +1,255 @@
+troubleshoot issues:
+--------------------------------------
+1. file or directory not found -> refer the key either by absolute or relative path
+2. SG check inbound and outbound rules..
+	All traffic All ports source 0.0.0.0/0
+3. key pair, while importing no new line
+
+ReCap:
+-----------
+
+cut -d ":" -f1
+awk -F "" '{print $NF}'
+
+print user information with or not system users?
+  Linux os create system users (they cannot login example: /sbin/nologin) and assign user id 0
+  Manualy users created by admin or others, then user id will be 1000
+command: 
+  awk -F ":" '$3>=1000 {print $1, $3}' users
+provide user name and user id which is greater than 1000 is user id
+condition : $3>=1000
+$3 is column, 1000 is a user id
+{print $1, $3}: username and user id
+users is a file
+
+example: 2
+cmd: awk -F ":" '$7=="/sbin/nologin" {print $1, $3}' users
+( or )
+cmd: awk -F ":" '$NF=="/sbin/nologin" {print $1, $3}' users
+i dont want count the line then use $NF is nth fragment
+
+
+----------------------------------------------------------------
+
+
+VIM Editor 
+-> visually improved
+-> Generally vim editor is used to edit the existing code and not suitable for developing the code from the scratch
+
+vim <file-name> 
+-> if the file exists then open the file
+-> if the file is not there then it create and open the file
+
+vim Linux.txt
+by default the editor is in escape mode
+insert mode press i
+esc mode -> press esc 
+cmd mode -> press :
+
+Colon mode
+===========
+  :q -> quit
+  :wq(write, quit) -> save the file
+  :wq!(write, quit, override) -> override the file
+  :q! -> dont save any changes, force quit
+  :set nu -> display numbers to every line of text
+  :<line-number> -> cursor goes particular line number
+  :/<word-to-search> -> top to bottom
+  :?<word-to-search> -> bottom to top
+  :<line-number>d -> deletes that line
+  :%d -> delete (% means)everything
+  :noh -> don't highlight
+  
+  :<line-number>s/<word-to-find>/replace-word -> replaces first occurrence
+  s means substitute
+  Example: 
+    filename is users
+    root:x:0:root:/root:/bin/bash
+    command: 1s/root/ROOT
+    In 1st line 1st word root is replaced with ROOT
+  
+  :<line-number>s/<word-to-find>/replace-word/g -> all occurrences in all lines
+  s means substitute
+  Example:
+    filename is users
+    root:x:0:root:/root:/bin/bash
+    operator:x:0:operator:/root:/sbin/nologin
+    command: 
+    :%s/root/Root/g
+    In all line root is replaced with ROOT
+  
+  Example:
+    :%s/<word-to-find>/replace-word/g -> all occurrences in all lines
+
+Esc Mode
+=========
+  gg -> takes to top of the file
+  shift+g -> takes us to bottom of the file
+  u -> undo
+  ctrl+r -> redo
+  dd -> deletes the line
+  yy -> copy the line
+  p -> paste below that line
+  shift+p -> paste above that line
+
+
+User Management
+===============
+  user group roles permissions
+  
+  user -> human
+  group -> group of humans, team
+  roles -> position
+  permissions -> access level to that roles
+  
+  CRUD: CREATE, READ, UPDATE, DELETE
+  -> user create
+  -> create group/team
+  -> assign user to that group
+  -> remove user from group
+  -> delete user
+  
+  Need sudo access to create users
+    command: sudo su -
+  
+  useradd <user-name> -> it creates user
+  id <user-name> -> to see user information
+  output: uid=1001(ram) gid=1001(ram) groups=1001(Ramesh)
+  cat /etc/passwd -> to see all users information
+  cat /etc/group -> to see all the groups information in server
+  
+  A user in Linux will have only one primary group and at least one secondary group.
+  
+  when you create user, group also will be created with same name.
+  
+  groupadd devops -> create a team devops
+  
+  usermod -g <group-name> <user-name>
+  add existing user to new group
+  
+  usermod -g devops Ramesh 
+  # usermod means usermodify
+  # add Ramesh user to devops group
+  
+  groupadd testing -> created a testing group
+  usermod -aG testing Ramesh 
+  #-aG means secondary group
+  
+  passwd ramesh -> set the password to user ramesh
+  
+  user login into Linux vm:
+    command: ssh username@IPADDRESS
+    example: ssh ramesh@IPADDRESS
+  
+  by default only key-based authentications are enabled in Linux servers
+  
+  To enable password based authentication for a user
+    command: vim /etc/ssh/sshd_config # ssh configs are here, it is very crucial, if any mistake is made no can login
+    command: sshd -t # check the syntax of config
+    command: systemctl restart sshd # changes made in sshd_config to reflect then restart ssh service
+  
+  When an user Ramesh need root access then Ramesh is trying to login
+    command: sudo su -
+    # ramesh is not in the sudoers file.
+  
+  How to give sudo access to user?
+    we can add Ramesh user to root group or best practice is that we can add user Ramesh to wheel group or root group
+    create an entry in /etc/sudoers file
+    command: vim /etc/sudoers
+    # the below 2 lines are contents in sudoers file
+              root ALL=(ALL) ALL
+              %wheel ALL=(ALL)  ALL
+  
+  ALL means ALL commands can access
+  First add Ramesh user to wheel group or root group
+  command: useradd -aG wheel Ramesh
+  
+  Now Ramesh user got root access and he can add other users
+    command: ssh ramesh@ipaddress
+    command: sudo useradd suresh
+    command: id suresh
+    # Now Ramesh user got root access.
+  
+  
+  -----------------
+  Imagine Ramesh is to managing the other adding users, deleting users, restart the system, start the system
+  
+  To know the full path of a command
+    command: which systemctl
+    output: /usr/bin/systemctl
+  
+  If you check this
+  command: vim /etc/sudoers
+          %wheel ALL=(ALL)  ALL
+          # ALL means all commands access
+          Ramesh ALL=(ALL) /usr/bin/systemctl
+  
+  
+  Now i want to give root access of a particular command to Ramesh user.
+  create an entry in /etc/sudoers file
+  command: vim /etc/sudoers
+          # the below 2 lines are contents in sudoers file
+          %wheel ALL=(ALL)  ALL
+          Ramesh ALL=(ALL)  /usr/bin/systemctl
+          # now Ramesh have root access and allowed to execute only systemctl command
+          :wq!
+  
+  after changes made in sudoers file, if you want to check the syntax then use this command
+    command: sudo visudo -c
+  
+  gpasswd -d <user-name> <group-name>
+  # remove a ramesh user from wheel group
+  command: id ramesh
+  output: uid=1001(ramesh) gid=1002(devops) groups=1002(devops),10(wheel),1003(testing)
+  [root@ipaddress ~]# gpasswd -d ram wheel
+  # Removing user ramesh from group wheel
+  [root@ipaddress ~]# id ramesh
+  uid=1001(ramesh) gid=1002(devops) groups=1002(devops),1003(testing)
+
+  Now, let see Ramesh can add new users or not
+  login as Ramesh command: ssh ramesh@ipaddress
+  # type password
+  command: sudo useradd iop
+  #type password for ramesh
+  output: Sorry, user ramesh is not allowed to execute '/usr/sbin/useradd iop' as root on ipaddress.ec2.internal.
+  # Ramesh user doesn't have permission to execute it.
+
+  command: sudo systemctl restart sshd
+  Now Ramesh has only access to systemctl
+
+  
+  ----------------------------------------
+  If an user moving out of an organization then follow these steps:
+  1. lock him immediately
+  2. remove from all groups
+  3. take backup of his home folder
+  4. delete the user
+  
+  remove a directory inside the files:
+  command: rmdir -r devops
+  -r means recursive, remove nested folder of devops directory
+  
+  .zip -> windows way of zip format 
+  .tar.gz -> Linux way for format of zip
+  
+  tar -cf <file-name>.tar.gz <foldername> # zipping the folder
+  tar -xf <file-name>.tar.gz # extracting the zip folder
+  
+  
+  commands:
+  usermod -L Ramesh # lock user
+  id Ramesh
+  
+  gpasswd -d Ramesh testing # remove user Ramesh from secondary testing group
+  id Ramesh
+  
+  usermod -g Ramesh Ramesh # assigning the primary group to Ramesh
+  
+  tar -cf /root/ramesh.tar.gz /home/ramesh # take backup of Ramesh directory
+  
+  userdel -r ramesh # remove user ramesh and his home directory
+  id Ramesh # no such user
+  
+  
+  
+  
