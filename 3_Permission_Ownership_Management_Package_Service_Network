@@ -1,0 +1,230 @@
+
+ReCap
+--------------------
+:q -> quit
+:q! -> force quit
+:wq -> write quit
+:/ -> search from top
+:? search from bottom
+:set nu -> display numbers
+:noh -> no highlight
+:<line-number>
+:%d -> delete everything
+:%s -> substituion
+
+Esc Mode
+=======
+u -> undo
+Ctrl+r -> redo
+gg -> takes to top
+Shift+g -> takes to bottom
+yy -> copy
+p -> paste
+dd -> cut
+shift+p -> paste above the line
+
+user management
+-----------------
+user information:
+  useradd <user-name> # adding the user
+  etc/passwd # user information will be stored in this file 
+  id user-name # you will get user information
+
+group information:
+  /etc/group # group information will be stored in this file
+  usermod -g group-name user-name # primary group
+  usermod -aG group-name user-name # secondary group
+
+passwd user-name # will set password for user
+/etc/ssh/sshd_config # ssh configuration will be in this file and password is stored in this file
+sshd -t # check the syntax
+command: systemctl restart sshd # changes made in sshd_config to reflect then restart ssh service
+
+/etc/sudoers # sudo access will be in this file
+vimsudo -c # check the syntax
+
+gpasswd -d <user-name> <group-name> # groups delete
+userdel # take home directory backup and delete user after leaving org
+
+tar -xf *.tar.gz # x means extraction of a file
+tar -cf *.tar.gz folder_name # c means creation of a file
+
+
+
+Permissions
+============
+  Read, Write and Execute
+  
+  - 	  rw- 		    r-- 			          r--
+  File	User/owner	all users in group	others
+  
+  Notations:
+  	user: u, group: g, others: o
+  
+  command: chmod o+w perm.txt # others will have write access to perm.txt file
+  
+  Who can change permissions of a file?
+    Permission can be changed by either owner of the file or root user can only change access levels
+  
+  R -> 4
+  W -> 2
+  X -> 1
+  
+  1. i want to give rwx for user, rw for group, x for other?
+      command: chmod 764
+
+
+Ownership
+===========
+  chown <user>:<group> # change ownership can only be changed by root user not even owner of the file can change the ownership
+  
+  commands:
+    sudo chown -R ec2user:devops linux
+    # changed the ownership from root user to ec2user
+    # -R means recursive inside folder of files will be changed the ownership
+    # ec2user is a user
+    # devops is a group
+    # linux is a folder
+
+How to give key based authentication to user?
+For Example:
+  Employee joins organisation
+  ==========================
+  1. Employee should generate keys, if he wants keys
+  2. send public key to admins
+  FYI: public key is not secure but private key is secure
+  3. admin creates .ssh folder inside user home directory
+  command: sudo useradd rahi 
+  Linux will create a home folder for rahi user
+  command: cd to home/rahi
+  command: mkdir .ssh # admin creates a .ssh folder and it is a hidden directory
+  command: vim authorized_keys # create a authorized keys file inside .ssh folder and paste the public key
+  
+  4. complete permission of authorized_keys file should be 700 for rahi user and the ownership of .ssh should be also to rahi user
+  command: chown rahi:rahi -R .ssh/
+  
+  5. command: chmod 600 authroized_keys # authorized keys max permission should be 600
+  
+  6. command: chmod 700 .ssh # only user should have all permissions to .ssh folder
+  
+  7. ownership should be user including group
+
+
+    command: ssh -i rahi rahi@ipaddress # login as a rahi user
+    Internal working of above command:
+      our request will reach to the ipaddress of a vm and carry the private key and user name then Linux will try to match public key in rahi folder home/rahi with private key 'rahi'.
+      if it is matched then allow the connection else not allowed the connection.
+    
+    if we want to give root access to the user then add the user to wheel group or create a entry in /etc/sudoers file.
+    
+    Not safe to use /etc/sudoers file because it is a big file there is a chance of making mistakes in this sudoers file.
+
+    command: 
+    usermod -g devops rahi # give access to rahi for devops group
+    cd /etc/sudoers.d # it is a directory
+    vim devops # this below content is placed devops file
+    # %devops ALL=(ALL) NOPASSWD: ALL
+    
+    # devops is group
+    # % means everyone in group
+    # for user no need of %
+    
+    # advantage is without disturbing /etc/sudoers file we can create a separate file for separate groups, this is a safest way to do it.
+    # Example: devops group will have a seperate file,
+    testing group will have a separate file
+    visudo -c # will check the syntax in the devops file
+
+
+package management
+=================
+  yum -> old command rhel
+  dnf -> latest command
+  
+  dnf or yum both are same
+  
+  apt-get or apt install
+  
+  dnf install <package-name> # redhat based instances
+  
+  /etc/yum.repos.d/ # all URLS are configured
+
+Linux OS architecture:
+  Hardware: 
+    At lowlevel we have cpu, motherboard, processor, ram, harddisk
+  Kernel: 
+    kernel is heart, brain and contacted to hardware, OS programming was developed and kernel will connected to hardware
+  Shell: 
+    commands will run on shell
+  Applications:
+    we can install applications and run on it
+
+Linus Torvalds developed Linux kernel from the scratch using c language and he invented git also to store the c language code
+
+
+flavours or distributions:
+Redhat -> commands + apps -> Redhat flavour/distribution -> CentOs/fedora
+Redhat family = redhat = centos = fedora = aws linux
+Ubuntu
+Oracle
+Suse
+IBM
+
+1. community edition -> freely available and support will not be there.
+2. enterprise edition -> support provided by redhat because money is charged
+
+
+package management commands:
+  dnf install <package-name> # install the package and it automatically installs dependent packages
+  # dnf install nginx
+  # packages are stored in amazonlinux repository because i have connected amazon Linux instance
+  # cd /etc/yum.repos.d
+  # cat amazonlinux.repo
+  # now dnf is connected to urls available in amazonlinux.repo
+
+  dnf remove nginix -y # remove nginix
+  dnf list installed # provide list of installed packages and its versions in Linux instace
+  dnf list available # these packages are available but not installed
+  dnf search python # search python package package
+
+  sudo wget -O /etc/yum.repos.d/jenkins.repo \
+      https://pkg.jenkins.io/redhat-stable/jenkins.repo # here Jenkins.repo was saved
+  
+  sudo yum install jenkins -y # Online yum install is connected to Jenkins repository and it will fetch and install it
+  
+  sudo yum remove Jenkins -y # remove Jenkins
+  
+  sudo yum upgrade # Add required dependencies for the jenkins package
+
+
+Service Management
+===================
+  System ports: 0-65,535
+  Basically system ports are dependents by applications
+  because in a server there will be so many applications will be running, i want to run on specific application that will be decided by system port
+  
+  ssh port 22, sshd service is running
+  web based applications will run port 443
+  maximum applications will be run on default port
+  Services in Linux are called daemons and that will run for years without disturbing.
+  
+  Commands:
+    systemctl start <service-name>
+    systemctl restart <service-name>
+    systemctl status <service-name> # check service is running or not
+    systemctl enable <service-name> # services will be auto started
+    systemctl disable <service-name>
+    
+    nginx is running on -> http/web server -> port 80
+    
+    sudo systemctl stop <service-name> -> stop a service
+
+
+network management
+=================
+  netstat -lntp -> check port is running or not and accessible to internet
+  l-> port listening
+  n -> number
+  t -> tcp is a protocol and internet responding protocols
+  p-> which program is running
+
+
