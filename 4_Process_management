@@ -1,0 +1,106 @@
+Process management
+==================
+Delivery Manager -> he creates some task in his to-do list and assign to TL
+TL -> he creates some task in his to-do list and assign to SE
+Sr.Engineer -> he creates some task in his to-do list and assign to JE
+Fresher -> he creates some task in his to-do list and complete the task
+
+		             Parent -> Child
+Who is parent for TL    -> DM
+
+When system is turned on then it will start root process.
+0 -> ProcessInstanceID
+1 -> PID
+
+PID		ParentPID
+2		0
+3		1
+
+
+command: ps # process started by current user
+
+whatever the task you give to Linux. 
+first it will create one ProcessinstanceID then work on it, give the results and complete the process
+
+command: ps -ef # display all the list of process which are started on Linux system
+
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0 01:52 ?        00:00:01 /usr/lib/systemd/systemd --switched-root --system --deserialize=32
+root           2       0  0 01:52 ?        00:00:00 [kthreadd]
+root           3       2  0 01:52 ?        00:00:00 [rcu_gp]
+root           4       2  0 01:52 ?        00:00:00 [rcu_par_gp]
+root           5       2  0 01:52 ?        00:00:00 [slub_flushwq]
+
+
+check nginx process is running or not?
+command: ps -ef | grep nginx
+
+Now we can say that process of nginx is running and service of nginx is also running
+
+
+
+1. background process : command: sleep 10 &
+the sleep ran in background
+
+2. foreground process -> blocks the screen, we can't do anything
+
+3. 
+a. how to kill or terminate the process?
+command: kill processid or pid
+b. sometimes a process may not be killed then kill the process forcibly
+command: kill -9 pid  
+
+4. command: top # show the list of process how much consuming the cpu, memory or ram
+
+
+
+
+
+Q. what to do when a process in running but application is not working?
+Ans: 
+a. take backup of all the logs server logs, app logs, DB logs, heap dump,etc... then do tar for it
+b. command: top  #check how much mem and cpu is consumed
+c. kill the process and restart services
+
+
+a person ran a PLSQL query in mysqlbench in prod server -> the time taken to execute the query is 30min.
+that person executed 30 to 40 times of query
+each time execution of a query a process is created -> CPU, RAM and HD consumed.
+server went down and unable to take remote.
+so went to data center restart the server or reboot the server in the cloud and terminated the process which caused the prod server gone down
+
+Don't do wrong in prod server in banking domain projects.
+
+process should be followed in project then only project will be successful otherwise not.
+If you know the technology and you don't follow the process then project will not be successful.
+
+
+3 tier architecture
+===================
+Desktop applications
+
+Disadvantages of using desktop applications:
+1. consumes more resources
+2. install, upgrade, repairs
+3. data is stored in local computer
+4. you should install antivirus
+5. what if laptop crashes?
+6. can't access from remote
+
+to overcome disadvantages of desktop application then applications are moved to web.
+
+applications are moved to 1 tier -> 2 tier -> 3 tier
+
+Database Server -> Application servers can access the data by running the sql/nosql query -> it handovers the data to webserver -> Webserver decorates them with HTML, CSS and JS -> Show to user
+Example:
+select * from user where username="siva" and password="siva123"
+if found -> 1
+if not found -> 0
+
+Database server contains: db langs sql, nosqlm cache, queues, logs
+application servers: backend languages java, python
+web servers: front end languages html, css, js
+load balancer: public and private lb
+
+
+
