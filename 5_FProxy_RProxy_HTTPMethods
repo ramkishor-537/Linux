@@ -1,0 +1,88 @@
+
+Common Commands used in projects:
+/var/log # we can see logs location in Linux
+tail-f messages # we can see running log
+less messages # to check logs and shift+g we go from downonwards
+
+telnet ipaddress portnumber # check the destination server is up
+
+commands:
+sudo su - # switch to super user or root user
+dnf install nginx -y # install the nginx by providing yes
+systemctl enable nginx # enable the nginx service
+systemctl start nginx # start the nginx service
+systemctl status nginx # check the nginx service is running or not
+systemctl restart nginx # restart the nginx
+netstat -lntp # it displays all tcp ports present listening for connections on a system
+ls -l # long list the files/directories
+
+# remove everything inside html folder forcibly
+rm -rf /usr/share/nginx/html/*
+
+# download content
+curl -o localpath destinationurl
+
+# Extract content
+cd /usr/share/nginx/html
+unzip localpath_zip_folder
+
+
+#Request going from webserver to backend server we use proxy
+
+Proxy means -> on behalf of someone
+
+we have Forward Proxy and Reverse Proxy
+
+Client and Server roles changes depending on situation or scenario basis.
+
+Client and Server: Mobile(Client) -> Netflix(Server)
+VPN: hide client identity
+client request vpn -> on behalf of the client vpn request to server to provide the data
+
+	        client    server
+client -> proxy  -> server
+client    server 
+
+
+
+Forward Proxy
+==============
+1. hiding client identity
+2. forward proxy sits in between client and server
+3. client aware
+4. reason to use forward proxy: VPN, content filtering, traffic monitoring, browser logging
+5. Can be used as caching or cache server also means if same data was requested by multiple users then that data directly downloaded from cache server only instead of destination server or internet.
+6. Forward proxy can be used as VPN
+7. forward proxy is a client side proxy 
+
+client -> forward proxy -> internet
+
+
+Reverse Proxy
+=============
+1. Hiding server identity
+2. Server Aware
+3. reason to use reverse proxy is Security reasons and queue management
+4. queue management or Load balancing both are same
+5. It is used for SSL/TLS/HTTPS termination, if you want to increase the speed of data between frontend-backend-db server have to remove https for web applications because encryption is not required
+when an request entered in frontend server encryption and decryption of a request in each server makes data access request slow it is required only before data request enter into frontend server.
+6. nginix is reverse proxy
+
+client -> reverse proxy -> server
+
+
+HTTP Methods
+============
+CRUD : create, read, update, delete
+
+http://Ipaddress/api/transaction
+GET -> Read the data
+
+http://Ipaddress/api/transaction
+POST -> Creating Data
+
+http://Ipaddress/api/transaction
+PUT -> UPDATE
+
+http://ipaddress/api/transaction
+DELETE
