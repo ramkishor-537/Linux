@@ -1,24 +1,18 @@
 Domain
 DNS -> Domain name system
 
-Name -> Mobile number
-humans -> names
-computers -> numbers
+Example:
+Contact will saved as a Name in smart phone -> Name will have Mobile number
+computers will understand -> numbers
 
 DNS-> translate domain name to ipaddress
-
-word = meaning
-
-facebook.com == ipaddress
+example:
+When we type websitename it translates to ipaddress
 
 ICANN -> Internet corporation for assigned names and numbers
-Non profit organisation
+It is an Non profit organisation
+ensures the security, stability, and interoperability of the global Internet by managing the Domain Name System (DNS) and coordinating unique identifiers like IP addresses.
 
-
-
-
-DNS: Today we understand about DNS
-google.com
 
 DNS resolver -> responsible to get IP address for the domains
 
@@ -43,7 +37,6 @@ TLD -> top level domains
 
 
 What happens if we buy the domain?
-
 GoDaddy, hostinger, aws, gcp, azure, etc...
 
 domainname.com
@@ -51,51 +44,27 @@ domainname.com
 2. if available, collect the details name, company, address, mobile, email id, payment info, etc.
 3. when we complete payment, GoDaddy updates TLD about buyer details and domain details..
 
-4. create one A record against the domain
-
+create one A record against the domain
 domainname.com A ipaddress
-
 update anything in your domain it propagates to TLD..
 
 Root servers
 =============
 tracks all the TLD and their addresses..
 
-1. how many servers?
-2. what is our infra capacity
-3. how much funding we have
-
-.siva -> TLD
-
-I need to approach popular domain registars like godaddy, hostinger, etc.
-
 Root servers has TLD information...
-
 
 Browser -> Cache -> OS -> Cache -> ISP DNS Resolver -> Cache -> Root servers -> TLD information -> Contact TLD -> godaddy -> it will now fetch A record for us
 
-ED -> 
-Local police -> MOEA -> MOHA -> Interpole police -> US courts -> Porkbun
-
-Domain registars -> Porkbun
-We can change domain authority to another company
-
-Book Permanent domain and wanted domain : choose godaddy
-Book simple or practice domain : hostinger: 2nd year onwards costly
-
-Tuvalu Gov -> .tv
-.in -> Indian government
-ivs.tv -> video advertising company
-
-
 NS -> Name servers
 Who is managing the domain, who is responsible to provide IP address..
+
+TTL means Time to Live
 
 DNS Records
 ===============
 TTL -> Time to Live -> How much time to live in cache or How much time to update
 A record -> Holds the IP address of your domain
-
 
 TTL: 1hr: 3600Seconds
 
@@ -103,16 +72,14 @@ why TTL ?
 when an IP address of a old server was changed to new server then mention the TTL to update in the whole process: Browser -> Cache -> OS -> Cache -> ISP DNS Resolver -> Cache -> Root servers -> TLD information -> Contact TLD -> godaddy -> it will now fetch A record for us
 During the migration of old server to new server the TTL time should 1 sec after all cache was updated in the whole process then change TTL to 1hr
 
-without reducing the TTL from 1hr to 1 sec we have faced all issues in 1 day?
+without reducing the TTL from 1hr to 1 sec we can face all issues in 1 day?
 this is the use case or root cause analysis to above problem
 solution:
 when we are updating or doing major updating the application in servers : atleast 1 day before reduce TTL to 1sec otherwise website will not work properly or server will be down because ISP DNS Resolver -> Cache will point to old IP address or old record will be updated of the server remaining the process will break
 
-process: Browser -> Cache -> OS -> Cache -> ISP DNS Resolver -> Cache -> Root servers -> TLD information -> Contact TLD -> godaddy -> it will now fetch A record for us
+Process: Browser -> Cache -> OS -> Cache -> ISP DNS Resolver -> Cache -> Root servers -> TLD information -> Contact TLD -> godaddy -> it will now fetch A record for us
 
-once major updating application is fine in servers, 
-once the new ip address got updated in the whole above process then take TTL back to 3600seconds or 1 hour
-
+once major updating application is fine in servers, once the new ip address got updated in the whole above process then take TTL back to 3600seconds or 1 hour
 
 why we have to change TTL from 1 sec to 1 hour after new server is stable or migrated from old server to new server?
 To avoid these issues:
@@ -121,12 +88,6 @@ To avoid these issues:
 	c. Massive Increase in DNS Costs
 	d. Overloading Your Own Infrastructure: 
 		unnecessary CPU and memory load on your authoritative nameservers, which could lead to performance bottlenecks during high traffic spikes because When same data is requested by multiple users each time the request goes to server instead from cache there
-
-
-
-nslookup domainname
-# It shows which address will be resolutioned
-
 
 Root servers:
 	13 root servers across the world managed by different organisations and governments to control TLD's and part of ICANN. DNS resolutions requests from ISP comes to root servers
@@ -140,21 +101,19 @@ Registars:
 NameServer:NS
 	Who is currently managing the domain, we can buy domain with one registar and we can transfer the management to another registar by updating NS records.
 	
-
-
 A record is mapping the IP address to domain
 
 A domain cannot have multiple IP Address?
 Solution: subdomains
-subdomains: domainname.online ->
+subdomains: domainname.online
 
 nslookup domainname.online # resolve domain to ip
 
-systemctl status
-netstat -lntp
-ps -ef | grep node
-curl http://localhost:8080/health # health check url
-telnet IP port
+systemctl status servicename # check the particular service is running or not
+netstat -lntp # it displays all tcp ports present listening for connections on a system
+ps -ef | grep node # select all process, display full details and filter only node
+curl http://localhost:8080/health # health check of an url
+telnet IP port # check the destination server is up
 
 
 HTTP status codes
