@@ -1,0 +1,191 @@
+Linus File system hierarchy:
+
+cd / : this is root folder
+
+/bin -> essential user command binaries/softwares/commands
+example: 
+	which cp
+	ls -l /bin/cp
+
+cd /boot
+/boot -> static files of the boot loader or OS booting process commands or files
+example: 
+	Linux kernel (vmlinuz-*)
+	Initial RAM disk (initramfs-*)
+	GRUB bootloader files
+
+/dev -> devices files or everything in Linux treated as a file including hardware devices keyboard, mouse, disk, USB, etc.
+The files in /dev are not regular files; they are special device files created and managed by the kernel
+example:
+	/dev/nvme0n1   → root EBS volume  
+	/dev/nvme1n1   → extra EBS disk  
+	/dev/null     → trash device  
+	/dev/random   → random number generator
+	/dev/tty	 → Terminal device (current session)
+	/dev/usb	 → USB device interface (usually managed by subdirs)
+	/dev/input/eventX  → Keyboard
+	/dev/input/mice  → Mouse	
+
+/etc -> extra configuration. Configurations related to system or user installed packages are here.
+These files control the behavior of the system, services, and installed applications. 
+example:
+	 /etc/passwd
+	 /etc/group
+	 /etc/systemd/system
+	 /etc/nginx
+
+/home -> any user related directories are here, /home/<username>
+The /home directory is where all regular users’ personal files and settings are stored. 
+Each user gets a subdirectory inside /home, named after their username.
+example:
+	User settings Hidden "dotfiles" like .ssh, .bashrc, .profile, .config/ store per-user settings.
+
+/lib and /lib64 -> all required libraries are here..
+The /lib directory contains essential shared libraries needed by the core system binaries in /bin and /sbin. 
+These libraries are similar to .dll files in Windows or .dylib in macOS.
+example:
+When you run a basic command like ls, the system:
+
+Finds /bin/ls
+Loads necessary libraries from /lib
+Executes the binary with support from those libraries
+
+/lib64 ->
+The /lib64 directory contains 64-bit shared libraries that are essential for running 64-bit binaries, especially those located in /bin and /sbin.
+On 64-bit Linux systems, libraries are separated by architecture to avoid conflicts:
+Directory Purpose /lib Contains 32-bit libraries (on multilib systems) /lib64 Contains 64-bit libraries (default on 64-bit systems)
+This separation helps the OS load the correct library version depending on whether a program is 32-bit or 64-bit.
+
+
+/media -> removable disks like usb, DVD, etc, are mounted here automatically in desktop environments
+example:
+When a user named alice inserts a USB named MyUSB, the system might mount it as:
+/media/alice/MyUSB/
+
+
+/mnt -> used to mount extra disks in linux server are here for temp purpose
+It’s primarily intended for manual or admin use.
+example:
+External hard drives
+USB drives (manually mounted)
+Network filesystems (NFS, SMB)
+ISO images
+
+
+/opt -> optional. when you installed a 3rd party software manually you do it here. /opt/roboshop, /opt/tomcat, /opt/jobss etc.
+example:
+/opt/
+├── google/
+│   └── chrome/
+├── myapp/
+│   ├── bin/
+│   ├── lib/
+│   └── config/
+
+/proc -> processor information, /proc/cpuinfo, /proc/meminfo. running process info is here related to kernel
+example:
+/proc/cpuinfo	Info about CPU(s)
+
+/root -> root user home directory
+
+/run -> running process information 
+example: Process id files
+
+/sbin -> essential root user binaries/softwares/commands
+example:
+fsck, iptables, reboot, iptables, init, etc.
+
+/srv -> service, data related to system like HTML directory, NFS directory, etc.
+example:
+/srv/ftp, /srv/www, /srv/nfs
+
+/swap -> virutal RAM. swap usage is more means system is under stress
+
+/sys -> kernel sub systems
+
+/tmp -> temporary directory in Linux
+
+/usr -> user related commands and libs are here
+example:
+/usr/lib Libraries - stores shared libraries required by programs 
+
+/var -> variable files, continously growing files are here
+example:
+	/var/log → system & app logs
+
+
+User use these commands mostly:
+/bin : if we install new commands then we use /bin
+/etc
+/home
+/opt
+/tmp
+/var
+
+
+Hard Disk vs Network Disk
+=========================
+hard disk near to computer network disk, any where in the internet like google drive, MS drive, S3, etc..
+
+OS, DB always should be in HD, HD latency is less normal files and objects are stored in network storages
+
+at a time one HD can be mounted to only one computer.
+Network storages can be attached to multiple computers
+
+
+How to add extra disk to Linux server
+=====================================
+1. create EBS volume
+2. attach to the instance, EBS volume should in the same AZ as EC2
+
+nvme0n1 -> root disk -> OS default purpose
+nvme1n1 -> new disk -> database data, imp files and configurations are stored here..
+
+3. list the block devices, you can see newly attached disk
+4. create partition from the disk
+sudo parted /dev/nvme1n1 --script mklabel gpt mkpart primary 0% 100%
+
+/var/lib/mysql -> mysql data is stored here
+/data -> redis
+
+
+
+1. how to increase the size of existing disk from 20gb to 35gb?
+solution : Aws will create a new disk and transfer the data of old disk to new disk
+
+memory usage commands
+===================
+df -hT -> disk information
+
+lsblk -> to see blocks information
+
+free -m -> RAM usage
+# -m means mb information
+# free -h means human readable
+
+htop # human readable format
+
+how to find which process in cpu is consuming memory?
+cmd: top
+
+top 10 memory process usages in Linux? or when a server is busy or not responding then which process is consuming more?
+ps aux --sort -rss | head -10
+
+how to find which files and folders is consuming memory?
+du -sh *
+memory occupied by files and folders
+
+now external disk is extended its size from 20gb to 35gb but external disk is not attached automatically.
+we have to attach external increased size disk(35gb) manually to existing partition /data(mount directory) to disk (20gb) manually 
+command: 
+	growpart nvme1n1 1 
+	# nvme1n1 is disk name 
+	# 1 means partition one
+	
+	lsblk -> to see blocks information
+
+# mount or attaching partitioned to /data
+xfs_growfs /data
+
+df -hT /data # /data is a directory but it is mounted to disk
+
