@@ -1,0 +1,112 @@
+inode symlink hardlink
+
+inode is very important
+
+inode = stores metadata of the file/directory
+
+inode contains these details:
+file type -> file/directory/link
+Who is Owner, Which group
+Permissions of the file/dir
+size of the file/dire
+create, update, etc
+actual memory block address
+
+
+
+commands: 
+ls -li
+stat Linux.txt
+
+inode does not store actual file content
+
+symlink == shortlink == softlink
+
+
+
+1. short cut to the file/folder
+example:
+mkdir links
+cd links
+ls -s ../linux.txt link
+ls -l
+# output:
+# lrwxrwxrwx 1 ec2-user ec2-user 12 jan 27 01:59 link -> ../linux.txt
+# above starting l means symbolic link
+
+stat link
+cd ..
+ls -li
+
+2. Main Difference: 
+inode number is different for symlink and inode number is different for actual file
+
+3. if actual file is removed, then symlink will break because path is missing
+
+4. uses for backward compatibility, switching versions and rollback is easy
+Example 1:
+# switch to new versions
+ln -sfn dnf-4 dnf
+# s means softlink, f means force, n means treat like a file
+ls -l # switch to dnf-4
+# dnf -> dnf-4
+
+# rollback to previous versions
+ln -sfn dnf-3 dnf
+ls -l # rollback to dnf-3
+
+Example 2:
+Now developer has update the application from app-3 to app-4
+mkdir app-3
+ls -l
+ln -s app-3 app # app is pointing to app-3
+ls -l
+
+mkdir app-4
+ln -snf app-4 app # app is pointing tp app-4
+ls -l
+
+if any problem occurs in app-4 we will rollback to app-3
+ln -s app-3 app
+ls -l
+
+Example 3:
+YUM -> Before RHEL-8 YUM is the package manager
+DNF for RHEL-8 the DNF is the package manager
+
+ls -l /usr/bin/dnf # /usr/bin/dnf -> dnf-3
+ls -l /usr/bin/yum # /usr/bin/yum -> dnf-3
+
+Where do we use symlink,
+/var/lib/jenkins -> jenkins-2.8
+
+jenkins-2.9
+
+/var/lib/jenkins -> jenkins-2.9
+
+5. You can create symlink for folders and files also
+6. You can create symlink across different filesystem
+7. sym link points to different memory location
+
+
+Hardlink
+=========
+1. You can't create hardlink in another filesystem
+example:
+  ln aws.txt aws-1.txt # hardlink
+2. Hardlink is same as original file but can be different name
+3. hardlink inode numbers are same
+4. they points to same memory location, so memory is not wasted
+5. you can't create hardlink to folders
+6. hardlinks are used for backup.
+7. when all links are deleted, then only original file will be deleted.
+
+
+sudo find /home -inum 524430
+# output:
+# /home/ec2-user/app-3/aws.txt
+# /home/ec2-user/app-4/aws.txt
+# /home/ec2-user/aws1.txt
+
+
+<<<<<<<<<<<<<<<< Linux ENDS >>>>>>>>>>>>>>>>>>>>>>
